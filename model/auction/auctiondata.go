@@ -2,7 +2,6 @@ package auction
 
 import (
 	. "github.com/fishedee/language"
-	"time"
 )
 
 type ItemListWhere struct {
@@ -20,6 +19,10 @@ type Item struct {
 	InitialPrice Decimal
 	CurrentPrice Decimal
 	ConsultPrice Decimal
-	TimeToStart  time.Time
-	TimeToEnd    time.Time
+	Start        int
+	End          int
+	TimeToStart  int
+	TimeToEnd    int
+	ViewerCount  int
+	BidCount     int
 }
