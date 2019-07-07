@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/axgle/mahonia"
+	. "github.com/fishedee/app/ioc"
 	. "github.com/fishedee/encoding"
 	. "github.com/fishedee/language"
 	. "github.com/fishedee/util"
@@ -71,4 +72,8 @@ func (this *AuctionAo) analyseItemList(dataGbk []byte) []Item {
 
 func NewAuctionAo() IAuctionAo {
 	return &AuctionAo{}
+}
+
+func init() {
+	MustRegisterIoc(NewAuctionAo)
 }

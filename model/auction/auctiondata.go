@@ -11,7 +11,7 @@ type ItemListWhere struct {
 }
 
 type Item struct {
-	Id           string
+	Id           int
 	Status       string
 	ItemUrl      string
 	Title        string
