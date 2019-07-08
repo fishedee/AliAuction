@@ -5,9 +5,10 @@ import (
 )
 
 type ItemListWhere struct {
-	Category int
-	City     string
-	StartSeg int
+	Category     int
+	City         string
+	LocationCode int
+	Page         int
 }
 
 type Item struct {

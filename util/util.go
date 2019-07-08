@@ -2,10 +2,12 @@ package util
 
 import (
 	. "aliauction/model/serverchan"
+	. "aliauction/model/wxpush"
 	. "github.com/fishedee/app/config"
 	. "github.com/fishedee/app/database"
 	. "github.com/fishedee/app/ioc"
 	. "github.com/fishedee/app/log"
+	. "github.com/fishedee/app/timer"
 )
 
 func NewMyConfig() Config {
@@ -42,9 +44,25 @@ func NewMyServerChanConfig(config Config) ServerChanConfig {
 	return serverChanConfig
 }
 
+func NewMyWxPushConfig(config Config) WxPushConfig {
+	var wxPushConfig WxPushConfig
+	config.MustBind("wxpush", &wxPushConfig)
+	return wxPushConfig
+}
+
+func NewMyTimer(log Log) Timer {
+	timer, err := NewTimer(log)
+	if err != nil {
+		panic(err)
+	}
+	return timer
+}
+
 func init() {
 	MustRegisterIoc(NewMyConfig)
 	MustRegisterIoc(NewMyLog)
 	MustRegisterIoc(NewMyDatabase)
 	MustRegisterIoc(NewMyServerChanConfig)
+	MustRegisterIoc(NewMyWxPushConfig)
+	MustRegisterIoc(NewMyTimer)
 }

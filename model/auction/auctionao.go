@@ -21,9 +21,10 @@ func (this *AuctionAo) GetItemList(where ItemListWhere) []Item {
 
 func (this *AuctionAo) fetchItemList(where ItemListWhere) []byte {
 	query := map[string]interface{}{
-		"auction_source": 0,
-		"provice":        "",
-		"st_param":       -1,
+		"auction_source":    0,
+		"provice":           "",
+		"st_param":          -1,
+		"auction_start_seg": -1,
 	}
 	if where.Category != 0 {
 		query["category"] = where.Category
@@ -31,8 +32,11 @@ func (this *AuctionAo) fetchItemList(where ItemListWhere) []byte {
 	if where.City != "" {
 		query["city"] = where.City
 	}
-	if where.StartSeg != 0 {
-		query["auction_start_seg"] = where.StartSeg
+	if where.LocationCode != 0 {
+		query["location_code"] = where.LocationCode
+	}
+	if where.Page != 0 {
+		query["page"] = where.Page
 	}
 	url := []string{}
 	for key, value := range query {
