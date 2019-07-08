@@ -21,7 +21,10 @@ func crawlData(task chan Item, auctionAo IAuctionAo, cacheAo ICacheAo, log Log) 
 	defer Catch(func(e Exception) {
 		log.Error("Error CrawlData![Code:%v][Msg:%v][Stack:%v]", e.GetCode(), e.GetMessage(), e.GetStackTrace())
 	})
-	log.Debug("try to crawl data")
+	defer func() {
+		close(task)
+		log.Debug("crawl data end")
+	}()
 	itemListWhere := []ItemListWhere{
 		//佛山工业厂房
 		ItemListWhere{
@@ -63,9 +66,9 @@ func crawlData(task chan Item, auctionAo IAuctionAo, cacheAo ICacheAo, log Log) 
 					task <- single
 				}
 			}
+			time.Sleep(time.Second)
 		}
 	}
-	close(task)
 }
 
 func formatPrice(a Decimal) string {
@@ -105,12 +108,15 @@ func pushData(task chan Item, wxPushAo IWxPushAo, log Log) {
 //go:generate mock ^./model/.*/.*(ao|db)\.go$ ^.*(Ao|Db)$
 func main() {
 	MustInvokeIoc(func(auctionAo IAuctionAo, cacheAo ICacheAo, wxPushAo IWxPushAo, log Log) {
-		//执行逻辑
-		itemChan := make(chan Item, 1024)
-		go crawlData(itemChan, auctionAo, cacheAo, log)
-		pushData(itemChan, wxPushAo, log)
-
-		//等待
-		time.Sleep(time.Minute * 30)
+		for {
+			//执行逻辑
+			log.Debug("try to crawl data")
+			itemChan := make(chan Item, 1024)
+			go crawlData(itemChan, auctionAo, cacheAo, log)
+			pushData(itemChan, wxPushAo, log)
+			log.Debug("try to crawl data finish")
+			//等待
+			time.Sleep(time.Minute * 30)
+		}
 	})
 }
