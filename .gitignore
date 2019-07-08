@@ -1,2 +1,4 @@
 .DS_Store
 aliauction
+data/log/*
+nohup.out
