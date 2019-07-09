@@ -54,6 +54,7 @@ func crawlData(task chan Item, auctionAo IAuctionAo, cacheAo ICacheAo, log Log) 
 				newWhere.Page = i + 1
 			}
 			data := auctionAo.GetItemList(newWhere)
+			log.Debug("%v,%v", newWhere, data)
 			for _, single := range data {
 				key := strconv.Itoa(single.Id)
 				hasData := cacheAo.Has(key)
@@ -102,6 +103,7 @@ func pushData(task chan Item, wxPushAo IWxPushAo, log Log) {
 		sourceUrl := fmt.Sprintf("https://h5.m.taobao.com/paimai/detail/detailV2.html?type=2&itemId=%v", item.Id)
 		picUrl := "https:" + item.PicUrl
 		wxPushAo.Push(title, description, picUrl, sourceUrl)
+		time.Sleep(time.Second)
 	}
 }
 
@@ -110,11 +112,11 @@ func main() {
 	MustInvokeIoc(func(auctionAo IAuctionAo, cacheAo ICacheAo, wxPushAo IWxPushAo, log Log) {
 		for {
 			//执行逻辑
-			log.Debug("try to crawl data")
+			log.Debug("crawl data begin")
 			itemChan := make(chan Item, 1024)
 			go crawlData(itemChan, auctionAo, cacheAo, log)
 			pushData(itemChan, wxPushAo, log)
-			log.Debug("try to crawl data finish")
+			log.Debug("crawl data finish")
 			//等待
 			time.Sleep(time.Minute * 30)
 		}
